@@ -3,7 +3,7 @@
 #include <pthread.h> 
 #include <stdio.h>
 #include <stdlib.h>
-#define NUM_THREADS 8
+#define NUM_THREADS 4
 
 double sum; /* this data is shared by the thread(s) */
 void *runner(void *param); /* threads call this function */

@@ -1,31 +1,46 @@
 /******************************************************************************
-   main.c
+  main.c
 
-   Implementation of a simple FIFO buffer as a linked list defined in list.h.
+  Implementation of a simple FIFO buffer as a linked list defined in list.h.
 
-******************************************************************************/
+ ******************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
 #include "list.h"
+#define NUM_THREADS 4
 
 // FIFO list;
 List *fifo;
+void* addElements(void *);
 
 int main(int argc, char* argv[])
 {
-  fifo = list_new();
+	pthread_t tid[NUM_THREADS]; /* the thread identifier */
+	pthread_attr_t attr; /* set of thread attributes */
+	pthread_attr_init(&attr);
 
-  list_add(fifo, node_new_str("s1"));
-  list_add(fifo, node_new_str("s2"));
+	fifo = list_new();
 
-  Node *n1 = list_remove(fifo);
-  if (n1 == NULL) { printf("Error no elements in list\n"); exit(-1);}
-  Node *n2 = list_remove(fifo);
-  if (n2 == NULL) { printf("Error no elements in list\n"); exit(-1);}
-  printf("%s\n%s\n", n1->elm, n2->elm);
+	int t;
+	for (t = 0; t < NUM_THREADS; t++){
+		pthread_create(&tid[t],&attr,addElements, NULL); /* wait for the thread to exit */
+	}
 
-  return 0;
+	int x;
+	for(x = 0; x < NUM_THREADS; x++){
+		pthread_join(tid[x],NULL); 
+	}
+	printf("number: %d \n", fifo->len);
+
+	return 0;
 }
 
+void* addElements(void *vp){
+	int i;
+	for(i = 0; i < 1000000; i++){
+		Node *n = node_new_str("xD");
+		list_add(fifo, n);
+	}
+}

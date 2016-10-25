@@ -28,3 +28,15 @@ sum = 21081851083600.933594
 real	0m2.390s
 user	0m9.068s
 sys	0m0.060s
+
+2.2)
+Standard threading issues can arise, eg. one thread can read an element that another thread is
+already removing/modifying.
+
+
+2.3)
+Without locks our test resulted in below length:
+number: 3977476
+
+With locks we gout or expected 4000000:
+number: 4000000

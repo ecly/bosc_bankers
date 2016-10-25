@@ -1,7 +1,7 @@
 all: fifo
 
 OBJS = list.o main.o 
-LIBS= -lpthread
+LIBS= -pthread
 
 fifo: main.o ${OBJS}
 	gcc -o $@  ${LIBS} ${OBJS}

@@ -26,7 +26,6 @@ List *list_new(void)
 	l->first = l->last = (Node *) malloc(sizeof(Node));
 	l->first->elm = NULL;
 	l->first->next = NULL;
-	printf("we made it here");
 	return l;
 }
 

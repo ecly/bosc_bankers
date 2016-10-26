@@ -32,7 +32,6 @@ int main(){
 	sem_init(&full, 0, 0);
 	pthread_mutex_init(&prodMutex, NULL);
 	pthread_mutex_init(&conMutex, NULL);
-	pthread_mutex_init(&mutex, NULL);
 	produced = 0;
 	consumed = 0;
 	buffer = list_new();
@@ -43,20 +42,16 @@ int main(){
 	pthread_attr_init(&attr);
 
 
-	int i;
+	int i, j, x, y;
 	for(i = 0; i < MAX_PRODUCERS; i++){
 		pthread_create(&tidPro[i],&attr,produce,(void *)(intptr_t)i);
 	}
-
-	int j;
 	for(j = 0; j < MAX_CONSUMERS; j++){
 		pthread_create(&tidCon[j],&attr,consume,(void *)(intptr_t)j); 
 	}
-	int x;
 	for(x = 0; x < MAX_PRODUCERS; x++){
 		pthread_join(tidPro[x],NULL); 
 	}
-	int y;
 	for(y = 0; y < MAX_CONSUMERS; y++){
 		pthread_join(tidCon[y],NULL); 
 	}
@@ -73,14 +68,12 @@ void* produce(void *vp){
 		Sleep(1000);
 
 		sem_wait(&empty);
-		pthread_mutex_lock(&mutex);
 
 		char number[15];
 		sprintf(number, "%d", item);
 		node_new_str(number);
 		list_add(buffer, n);
 
-		pthread_mutex_unlock(&mutex);
 		sem_post(&full);
 
 		printf("Producer_%d produced Item_%s. Items in buffer: %d (out of %d). \n", i, number, buffer->len, BUFFER_SIZE);
@@ -97,11 +90,9 @@ void* consume(void *vp){
 		Sleep(1000);
 
 		sem_wait(&full);
-		pthread_mutex_lock(&mutex);
 
 		n = list_remove(buffer);
 
-		pthread_mutex_unlock(&mutex);
 		sem_post(&empty);
 
 		printf("Consumer_%d consumed Item_%s. Items in buffer: %d (out of %d). \n", i, (char *)n->elm, buffer->len, BUFFER_SIZE);

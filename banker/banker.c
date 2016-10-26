@@ -146,6 +146,7 @@ int **allocate_int_matrix(int r, int c){
 
 int isSafeState(State *state){
 	int j, i, safe;
+	safe = 1;
 	for(i = 0; i < m; i++){
 		for(j = 0; j < n; j++){
 			if(state->need[i][j] > state->available[j]) {
